@@ -1,0 +1,13 @@
+{
+  "eslint.codeAction.disableRuleComment": {
+    "enable": false
+  },
+  "eslint.codeAction.showDocumentation": {
+
+    "enable": false
+  },
+  "eslint.packageManager": "yarn",
+  "eslint.workingDirectories": [
+  
+  ]
+}
