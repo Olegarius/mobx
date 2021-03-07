@@ -1,7 +1,6 @@
 import superagent from 'superagent';
 
-const BASEURL = process.env.SERVER;
-
+const BASEURL = `${document.location.protocol}//${document.location.host}`;
 const TIMEOUT = 12000;
 const METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'PATCH', 'DELETE'];
 

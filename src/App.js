@@ -1,20 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { observer } from "mobx-react";
-import { Search, SearchResults } from './components';
-import MainStore from './stores/MainStore';
-import { MainContainer } from './app.style';
+import { Search, SearchResults, Main } from './components';
+import  { store, StoreProvider } from './stores/MainStore';
 
-const { StoreProvider } = MainStore();
+const Loader = (() => (
+  <Main>
+    <Search />
+    <SearchResults />
+  </Main>
+));
 
 const App = observer(() => (
-    <StoreProvider>
-      {store => (
-        <MainContainer>
-          <Search store={store} />
-          <SearchResults store={store} />
-        </MainContainer>
-      )}
-    </StoreProvider>
+    <StoreProvider store={store}><Loader /></StoreProvider>
   )
 );
 

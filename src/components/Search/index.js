@@ -1,9 +1,10 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect, useContext } from 'react';
 import { observer } from "mobx-react";
-import request from '../../services/request';
+import { StoreContext } from '../../stores/MainStore';
 import { SearchInput, SearchPage, SearchBar } from './index.style';
 
-const Search = observer(({ store }) => {
+const Search = observer(() => {
+  const store = useContext(StoreContext);
   const inputElement = useRef(null);
   const onSetLetter = useCallback((e) => {
     const word = e.currentTarget.value;
@@ -17,17 +18,6 @@ const Search = observer(({ store }) => {
     }
   }, []);
   
-  useEffect(() => {
-    if (!store.dictionary.length) {
-      request({
-        baseurl: `${document.location.protocol}//${document.location.host}`,
-        url: '/dictionary.json'
-      })
-        .then(result => store.dictionary = result.body || [])
-        .catch(e => console.error(e));
-    }
-  }, [store]);
-
   return (
     <SearchPage>
       <SearchBar>

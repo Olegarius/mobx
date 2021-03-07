@@ -1,16 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useContext } from 'react';
 import { observer } from "mobx-react";
 import Chart from "react-google-charts";
+import { StoreContext } from '../../stores/MainStore';
 
-const SearchResults = observer(({ store }) => {
-  const letter = store.letter;
-  const letterCounts = useCallback((store) => ({
-    startWithCount: store.startWithCount(letter),
-    endWithCount: store.endWithCount(letter),
-    appearCount: store.appearCount(letter),
-    doubleAppearCount: store.doubleAppearCount(letter)
-  }), [letter]);
-  const calculatedLetters = letterCounts(store);
+const SearchResults = observer(() => {
+  const store = useContext(StoreContext);
+  const calculatedLetters = store.counters();
 
   const chartData = [
     ['letters count', 'calculations'],
@@ -23,16 +18,26 @@ const SearchResults = observer(({ store }) => {
     title: 'Letters Count',
     is3D: true
   };
+  const isShowChart = calculatedLetters.startWithCount
+    || calculatedLetters.endWithCount
+    || calculatedLetters.appearCount
+    || calculatedLetters.doubleAppearCount;
 
   return (
-    <Chart
-      width={'100%'}
-      height={'500px'}
-      chartType="PieChart"
-      loader={<div>Loading Chart...</div>}
-      data={chartData}
-      options={chartOptions}
-    />
+    <>
+      {isShowChart ? (
+        <Chart
+          width={'100%'}
+          height={'500px'}
+          chartType="PieChart"
+          loader={<div>Loading Chart...</div>}
+          data={chartData}
+          options={chartOptions}
+        />
+      ) : (
+        <div>No data</div>
+      )}
+    </>
   );
 });
 

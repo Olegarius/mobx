@@ -1,20 +1,32 @@
+import React from "react";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 
-const MainStore = () => {
-  const store = observable({
-    dictionary: [],
-    letter: '',
-    startWithCount: (letter) => store.dictionary.reduce((sum, word) => (sum + Number(word[0] === letter)), 0),
-    endWithCount: (letter) => store.dictionary.reduce((sum, word) => (sum + Number(word[word.length - 1] === letter)), 0),
-    appearCount: (letter) => store.dictionary.reduce((sum, word) => (sum + Number(letter && (word.match((new RegExp(letter, 'g'))) || []).length)), 0),
-    doubleAppearCount: (letter) => store.dictionary.reduce((sum, word) => (sum + Number(letter && (word.match((new RegExp(`${letter}${letter}`, 'g'))) || []).length)), 0)
-  });
+export const store = observable({
+  dictionary: [],
+  letter: '',
+  counters: () => {
+    const initialAcc = {
+      startWithCount: 0,
+      endWithCount: 0,
+      appearCount: 0,
+      doubleAppearCount: 0
+    };
 
-  const Provider = observer(({ children }) => (children(store)));
+    if (!store.dictionary.length) {
+      return initialAcc;
+    }
 
-  return { store, StoreProvider: Provider };
-};
+    return store.dictionary.reduce((acc, word) => ({
+        startWithCount: acc.startWithCount + Number(word[0] === store.letter),
+        endWithCount: acc.endWithCount + Number(word[word.length - 1] === store.letter),
+        appearCount: acc.appearCount + Number(store.letter && (word.match((new RegExp(store.letter, 'g'))) || []).length),
+        doubleAppearCount: acc.doubleAppearCount + Number(store.letter && (word.match((new RegExp(`${store.letter}${store.letter}`, 'g'))) || []).length)
+    }), initialAcc)
+  }
+});
 
-
-export default MainStore;
+export const StoreContext = React.createContext();
+export const StoreProvider = observer(({ children }) => (
+  <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+));
